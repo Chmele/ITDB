@@ -3,9 +3,25 @@ from collections.abc import Sequence
 
 
 class Table:
-    def __init__(self, fields: "list[Field]"):
+    def __init__(self, fields: "list[Field]", rows = []):
         self.fields = fields
-        self.rows = []
+        self.rows = rows
+
+    def compatible(self, other: "Table") -> bool:
+        if len(self.fields) != len(other.fields):
+            return False
+        return all(
+            Field.compatible(field1, field2) 
+            for field1, field2 
+            in zip(self.fields, other.fields)
+            )
+
+    def __add__(self, other: "Table") -> "Table":
+        assert Table.compatible(self, other)
+        return Table(self.fields, rows = self.rows + other.rows)
+    
+    def __eq__(self, other: "Table") -> bool:
+        return Table.compatible(self, other) and self.rows==other.rows
 
     def validate_row(self, row: Sequence):
         if len(row) != len(self.fields):
