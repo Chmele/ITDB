@@ -3,7 +3,9 @@ from collections.abc import Sequence
 
 
 class Table:
-    def __init__(self, fields: "list[Field]", rows = []):
+    def __init__(self, fields: "list[Field]", *, rows = None):
+        if rows is None:
+            rows = []
         self.fields = fields
         self.rows = rows
 

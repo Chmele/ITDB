@@ -30,8 +30,8 @@ class TestTables(unittest.TestCase):
         ])
         t.add_row([1, 1])
         t2 = Table([
-            IntegerField('id'),
-            IntegerField('something'),
+            IntegerField('name'),
+            IntegerField('noname'),
         ])
         t2.add_row([3, 4])
         # t2.add_row([3, 2])
@@ -42,6 +42,6 @@ class TestTables(unittest.TestCase):
         ])
 
         res.add_row([1, 1])
-        # res.add_row([3, 2])
+        res.add_row([3, 4])
     
         self.assertEqual(res, t + t2)
