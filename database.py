@@ -2,9 +2,11 @@ from typing import Union
 import os
 from table import Table
 import jsonpickle
+import Pyro5.api
 
 PathLike = Union[str, bytes, os.PathLike]
 
+@Pyro5.api.expose
 class Database:
     def __init__(self):
         self.tables = []
