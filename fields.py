@@ -12,7 +12,7 @@ class Field:
 
 class IntegerField(Field):
     def validate_value(self, value: Any):
-        return isinstance(value, int)
+        return isinstance(value, int) or value.isdigit()
 
 
 class FloatField(Field):

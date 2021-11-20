@@ -9,13 +9,16 @@ PathLike = Union[str, bytes, os.PathLike]
 @Pyro5.api.expose
 class Database:
     def __init__(self):
-        self.tables = []
+        self.tables = {}
+    
+    def as_dict(self):
+        return {name: table for name, table in self.tables.items()}
 
-    def append_table(self, table: Table):
-        self.tables.append(table)
+    def append_table(self, table: Table, name: str) -> None:
+        self.tables.update({name: table})
 
-    def remove_table(self, table: Table):
-        self.tables.remove(table)
+    def remove_table(self, name: str) -> None:
+        del self.tables[name]
     
     def save(self, path: PathLike):
         with open(path, 'w') as file:

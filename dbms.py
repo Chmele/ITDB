@@ -6,9 +6,14 @@ class DBMS:
         self.databases = {}
 
     def create_database(self, name: str) -> Database:
-        d = Database
-        self.databases.update({name: d})
-        return d
+        self.databases.update({name: Database()})
+        return self.databases[name]
 
     def get_database(self, name: str) -> Database:
         return self.databases[name]
+
+    def get_or_create_database(self, name: str) -> Database:
+        try:
+            return self.get_database(name)
+        except KeyError:
+            return self.create_database(name)

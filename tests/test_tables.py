@@ -1,4 +1,5 @@
 import unittest
+from database import Database
 from table import Table
 from fields import *
 
@@ -45,3 +46,11 @@ class TestTables(unittest.TestCase):
         res.add_row([3, 4])
     
         self.assertEqual(res, t + t2)
+
+    def test_as_dict(self):
+        db = Database()
+        db.append_table(Table((IntegerField('id'), StringField('name'))), 'test')
+        db.tables['test'].add_row((1, 'testname'))
+        db.tables['test'].add_row((2, '2'))
+        db.tables['test'].add_row((3, '2'))
+        self.assertEqual(list(db.tables['test'].as_dict())[0], {'id': 1, 'name':'testname'})

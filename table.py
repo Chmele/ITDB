@@ -9,6 +9,15 @@ class Table:
         self.fields = fields
         self.rows = rows
 
+    def as_dict(self):
+        return [
+            {
+                field.name: value  
+                for field, value in zip(self.fields, row)
+            } 
+            for row in self.rows
+        ]
+
     def compatible(self, other: "Table") -> bool:
         if len(self.fields) != len(other.fields):
             return False
@@ -34,5 +43,8 @@ class Table:
         if self.validate_row(row):
             self.rows.append(list(row))
 
-    def get_row(self, index: int):
+    def get_row(self, index: int) -> tuple:
         return self.rows[index]
+
+    def get_row_as_dict(self, index: int) -> dict:
+        return {field.name: value for field, value in zip(self.fields, self.rows[index])}
