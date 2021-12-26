@@ -12,13 +12,13 @@ class Database:
         self.tables = {}
     
     def as_dict(self):
-        return {name: table for name, table in self.tables.items()}
+        return {name: str(table) for name, table in self.tables.items()}
 
     def append_table(self, table: Table, name: str) -> None:
         self.tables.update({name: table})
 
     def remove_table(self, name: str) -> None:
-        del self.tables[name]
+        self.tables.pop(name)
     
     def save(self, path: PathLike):
         with open(path, 'w') as file:
