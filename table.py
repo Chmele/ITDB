@@ -1,4 +1,4 @@
-from fields import Field
+from fields import *
 from collections.abc import Sequence
 
 
@@ -8,6 +8,19 @@ class Table:
             rows = []
         self.fields = fields
         self.rows = rows
+
+    @staticmethod
+    def from_str_list(fields: "list[str]") -> "Table":
+        mapping = {
+            'String': StringField, 
+            'Integer': IntegerField,
+            'Float': FloatField,
+            'Char': CharField,
+            'Png': PngField,
+            'FloatInterval': FloatIntervalField,
+        }
+        mapped = [mapping[field] for field in fields]
+        return Table(mapped)
 
     def as_dict(self):
         return [

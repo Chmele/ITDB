@@ -60,9 +60,19 @@ class PostSuccessSchema(Schema):
 
 
 class RestDatabase(MethodResource, Resource):
+    @doc(tags=['GET'])
     @marshal_with(DatabaseResponseSchema)
     def get(self, database):
         return {'database': d.get_or_create_database(database).as_dict()}
+
+    @use_kwargs({'data': fields.List(fields.Str)})
+    @doc(tags=['POST'])
+    def post(self, database, data):
+        new = Table.from_str_list(data)
+        d.get_or_create_database(database).append_table(new)
+        return {'table': str(new)}
+
+    @doc(tags=['DELETE'])
     def delete(self, database):
         d.delete_database(database)
         return {'success': True}
@@ -70,26 +80,36 @@ class RestDatabase(MethodResource, Resource):
 
 class RestTable(MethodResource, Resource):
     @marshal_with(TableGetResponseSchema)
+    @doc(tags=['GET'])
     def get(self, database, table):
         return {'table': d.get_or_create_database(database).tables.get(table).as_dict()}
 
     @use_kwargs({'data': fields.List(fields.Str)})
     @marshal_with(PostSuccessSchema)
+    @doc(tags=['POST'])
     def post(self, database, table, data):
         d.get_or_create_database(database).tables.get(table).add_row(data)
 
+    @doc(tags=['DELETE'])
     def delete(self, database, table):
         d.get_or_create_database(database).remove_table(table)
 
 
 class RestRow(MethodResource, Resource):
     @marshal_with(RowResponseSchema)
+    @doc(tags=['GET'])
     def get(self, database, table, id):
         return {'row': d.get_or_create_database(database).tables.get(table).get_row_as_dict(id)}
+    @use_kwargs({'data': fields.List(fields.Str)})
+    @doc(tags=['POST'])
+    def post(self, database, table, id, data):
+        print(data, flush=True)
+        d.get_or_create_database(database).tables.get(table).rows[id] = data
 
 
 class RestMerge(MethodResource, Resource):
     @marshal_with(TableGetResponseSchema)
+    @doc(tags=['GET'])
     def get(self, database, table1, table2):
         table1 = d.get_or_create_database(database).tables.get(table1)
         table2 = d.get_or_create_database(database).tables.get(table2)
