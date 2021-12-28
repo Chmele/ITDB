@@ -11,6 +11,12 @@ class Database:
     def __init__(self):
         self.tables = {}
     
+    def get_table(self, name):
+        return self.tables[name]
+
+    def get_tables(self):
+        return str(self.tables)
+
     def as_dict(self):
         return {name: str(table) for name, table in self.tables.items()}
 

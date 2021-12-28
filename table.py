@@ -1,7 +1,9 @@
 from fields import *
 from collections.abc import Sequence
+import Pyro5.api
 
 
+@Pyro5.api.expose
 class Table:
     def __init__(self, fields: "list[Field]", *, rows = None):
         if rows is None:
@@ -10,7 +12,7 @@ class Table:
         self.rows = rows
 
     @staticmethod
-    def from_str_list(fields: "list[str]") -> "Table":
+    def from_field_dict(fields) -> "Table":
         mapping = {
             'String': StringField, 
             'Integer': IntegerField,
@@ -19,9 +21,9 @@ class Table:
             'Png': PngField,
             'FloatInterval': FloatIntervalField,
         }
-        mapped = [mapping[field] for field in fields]
+        mapped = [mapping[field](name) for name, field in fields.items()]
         return Table(mapped)
-
+        
     def as_dict(self):
         return [
             {

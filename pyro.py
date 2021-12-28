@@ -1,23 +1,12 @@
 import os
+
+from fields import IntegerField
+from table import Table
 os.environ['PYRO_SERIALIZER'] = 'pickle'
 
 from dbms import DBMS
 import Pyro5.api
 from database import Database
-
-
-# @Pyro5.api.expose
-# class GreetingMaker(object):
-#     def get_fortune(self, name):
-#         return "Hello, {0}. Here is your fortune message:\n" \
-#                "Behold the warranty -- the bold print giveth and the fine print taketh away.".format(name)
-
-
-# daemon = Pyro5.api.Daemon()             # make a Pyro daemon
-# uri = daemon.register(GreetingMaker)    # register the greeting maker as a Pyro object
-
-# print("Ready. Object uri =", uri)       # print the uri so we can use it in the client later
-# daemon.requestLoop()                    # start the event loop of the server to wait for calls
 
 @Pyro5.api.expose
 class RemoteDBMS(DBMS):
@@ -28,7 +17,7 @@ class RemoteDBMS(DBMS):
         print('invoked')
         d = Database()
         self.databases.update({name: d})
-        return daemon.register(d)
+        # return daemon.register(d)
 
     @Pyro5.api.expose
     def get_database(self, name: str) -> Database:
@@ -37,10 +26,11 @@ class RemoteDBMS(DBMS):
 
 
 
-daemon = Pyro5.api.Daemon()             # make a Pyro daemon
+daemon = Pyro5.api.Daemon()
 d = RemoteDBMS()
 d.create_database('test')
-uri = daemon.register(d)       # register the greeting maker as a Pyro object
-
+d.databases['test'].append_table(Table((IntegerField('id'),)), 'test')
+d.databases['test'].tables['test'].add_row([112])
+uri = daemon.register(d)
 print("Ready. Object uri =", uri)       # print the uri so we can use it in the client later
-daemon.requestLoop()    
+daemon.requestLoop()

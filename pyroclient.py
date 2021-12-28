@@ -1,5 +1,7 @@
 import Pyro5.api
+import os
+os.environ['PYRO_SERIALIZER'] = 'pickle'
 
-uri = 'PYRO:obj_16a6c481be094671b504137c9d025e43@localhost:60420'
+uri = 'PYRO:obj_42caa510e90747e58214a1dc13195c0f@localhost:50292'
 dbms = Pyro5.api.Proxy(uri)
-db = Pyro5.api.Proxy(dbms.create_database('testDB'))
+# db = Pyro5.api.Proxy(dbms.get_database('test'))

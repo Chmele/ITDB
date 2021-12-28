@@ -12,11 +12,19 @@ class Field:
 
 class IntegerField(Field):
     def validate_value(self, value: Any):
+        try:
+            value = eval(value)
+        except TypeError:
+            pass
         return isinstance(value, int) or value.isdigit()
 
 
 class FloatField(Field):
     def validate_value(self, value: Any):
+        try:
+            value = eval(value)
+        except TypeError:
+            pass
         return isinstance(value, float)
 
 
@@ -32,10 +40,14 @@ class CharField(StringField):
 
 class PngField(StringField):
     def validate_value(self, value: Any):
-        return isinstance(value, str) and path.isfile(value)
+        return isinstance(value, str)# and path.isfile(value)
 
 
 class FloatIntervalField(Field):
     def validate_value(self, value: Any):
-        return isinstance(value, tuple) and len(tuple) == 2 and\
+        try:
+            value = eval(value)
+        except TypeError:
+            pass
+        return isinstance(value, tuple) and len(value) == 2 and\
             isinstance(value[0], float) and isinstance(value[1], float)
